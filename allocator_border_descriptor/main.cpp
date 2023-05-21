@@ -9,6 +9,7 @@ void testing_allocator(
         unsigned int iterations_count)
 {
     std::list<void*> allocated_blocks;
+    //i want to eat
 
 //    std::random_device rd;
 //    auto mtgen = std::mt19937(12345);
@@ -89,8 +90,9 @@ void testing_allocator(
 int main(){
     logger_builder* builder = new logger_builder_concrete();
     logger* mylogger = builder->add_stream("console", logger::severity::debug)->add_stream("log.txt", logger::severity::debug)->construct();
-    memory* alloc= new allocator_border_descriptor(200000, mylogger, nullptr, allocator_border_descriptor::detour::first );
+    memory* alloc= new allocator_border_descriptor(200000, mylogger, nullptr, allocator_border_descriptor::detour::first );//I want to sleep
     testing_allocator(alloc, mylogger,  5000);
+
     mylogger->log("~~~~~~~~~~~~~~~    ~~~~~~~~~~~~~~~~~~   ~~~~~~~~~~~~~~~~~~   ~~~~~~~~~~~~~", logger::severity::debug);
 
     delete alloc;
