@@ -89,8 +89,8 @@ void testing_allocator(
 
 int main(){
     logger_builder* builder = new logger_builder_concrete();
-    logger* mylogger = builder->add_stream("console", logger::severity::debug)->add_stream("log.txt", logger::severity::debug)->construct();
-    memory* alloc= new allocator_border_descriptor(2000000, mylogger, nullptr, allocator_border_descriptor::detour::worst );//I want to sleep
+    logger* mylogger = builder->add_stream("console", logger::severity::debug)->add_stream("C:\\Users\\HP\\CLionProjects\\labs_4_sem\\allocator_border_descriptor\\log.txt", logger::severity::debug)->construct();
+    memory* alloc= new allocator_border_descriptor(20000, mylogger, nullptr, allocator_border_descriptor::detour::best);//I want to sleep
     testing_allocator(alloc, mylogger,  1500);
 
     mylogger->log("~~~~~~~~~~~~~~~    ~~~~~~~~~~~~~~~~~~   ~~~~~~~~~~~~~~~~~~   ~~~~~~~~~~~~~", logger::severity::debug);

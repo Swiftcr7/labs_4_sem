@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <limits.h>
-#include "../../untitled4/allocator2.h"   //TODO: fix path!!!!!
+#include "../../scc//allocator2.h"   //TODO: fix path!!!!!
 
 class allocator_border_descriptor final : public memory{
 private:
@@ -52,8 +52,6 @@ private:
     }
 
     void inner_dealloc(void* res)const {
-
-
         auto block = reinterpret_cast<void *>(reinterpret_cast<unsigned char *>(res) - 2 * sizeof(void *) - sizeof(size_t));
 
         if (*get_pointer_to_past_block(block) == nullptr && *get_pointer_to_next_block(block) == nullptr) {
@@ -126,26 +124,30 @@ public:
                 }
                 if (*get_pointer_to_next_block(current_block)== nullptr && (reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1)+*get_size()-reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)-*get_block_size(current_block))>=target_size+sizeof(size_t)+2*sizeof(void*)){
                     *get_block_size((reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block)))=target_size;
+
                     *get_pointer_to_next_block((reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block)))=nullptr;
+
                     *get_pointer_to_past_block((reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1))+*get_block_size(current_block))=current_block;
+
                     *get_pointer_to_next_block(current_block)=reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block);
+
                     return reinterpret_cast<void*>(get_pointer_to_past_block(reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block))+1);
                 }
                 return nullptr;
 
             }
             case detour::best:{
-                void* result= nullptr;
+                void* res= nullptr;
                 int min_size=INT_MAX;
                 auto current_block= *get_pointer();
-                if (reinterpret_cast<unsigned char*>(*get_pointer())-reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1)>=target_size+sizeof(size_t)+2*sizeof(void*) && reinterpret_cast<unsigned char*>(*get_pointer())-reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1)<INT_MAX){
+                if (reinterpret_cast<unsigned char*>(*get_pointer())-reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1)>=target_size+sizeof(size_t)+2*sizeof(void*) && reinterpret_cast<unsigned char*>(*get_pointer())-reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1)<min_size){
                     auto bloc=reinterpret_cast<void *>(reinterpret_cast<void**>(get_pointer())+1);
                     *get_block_size(bloc)=target_size;
                     *get_pointer_to_past_block(bloc)= nullptr;
                     *get_pointer_to_past_block(*get_pointer())=bloc;
                     *get_pointer_to_next_block(bloc)=*get_pointer();
                     *get_pointer()=bloc;
-                    result=reinterpret_cast<void*>(get_pointer_to_past_block(bloc)+1);
+                    res=reinterpret_cast<void*>(get_pointer_to_past_block(bloc)+1);
                     min_size=reinterpret_cast<unsigned char*>(*get_pointer())-reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1);
 
 
@@ -153,8 +155,8 @@ public:
                 while (*get_pointer_to_next_block(current_block)!= nullptr){
                     if (reinterpret_cast<unsigned char*>(*get_pointer_to_next_block(current_block))-(reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+(*get_block_size(current_block)))>=target_size+sizeof(size_t)+2*sizeof(void*)){
                         if (reinterpret_cast<unsigned char*>(*get_pointer_to_next_block(current_block))-(reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+(*get_block_size(current_block)))<min_size){
-                            if (result!= nullptr){
-                                inner_dealloc(result);
+                            if (res!= nullptr){
+                                inner_dealloc(res);
                             }
                             auto pointer=*get_pointer_to_next_block(current_block);
                             *get_block_size(reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+(*get_block_size(current_block)))=target_size;
@@ -169,7 +171,7 @@ public:
 
                             min_size=reinterpret_cast<unsigned char*>(*get_pointer_to_next_block(current_block))-(reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+(*get_block_size(current_block)));
 
-                            result=reinterpret_cast<void*>(get_pointer_to_past_block(reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block))+1);
+                            res=reinterpret_cast<void*>(get_pointer_to_past_block(reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block))+1);
                             current_block=*get_pointer_to_next_block(current_block);
                         }else{
                             current_block=*get_pointer_to_next_block(current_block);
@@ -180,8 +182,8 @@ public:
                 }
                 if (*get_pointer_to_next_block(current_block)== nullptr && (reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1)+*get_size()-reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)-*get_block_size(current_block))>=target_size+sizeof(size_t)+2*sizeof(void*)){
                     if ((reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1)+*get_size()-reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)-*get_block_size(current_block))<min_size){
-                        if (result!= nullptr){
-                            inner_dealloc(result);
+                        if (res!= nullptr){
+                            inner_dealloc(res);
                         }
                         *get_block_size((reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block)))=target_size;
 
@@ -195,14 +197,14 @@ public:
                     }
 
                 }
-                return result;
+                return res;
 
             }
             case detour::worst:{
                 void* result= nullptr;
-                int max_size=0;
+                size_t max_size=0;
                 auto current_block= *get_pointer();
-                if (reinterpret_cast<unsigned char*>(*get_pointer())-reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1)>=target_size+sizeof(size_t)+2*sizeof(void*) && reinterpret_cast<unsigned char*>(*get_pointer())-reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1) > max_size){
+                if (reinterpret_cast<unsigned char*>(*get_pointer())-reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1)>=target_size+sizeof(size_t)+2*sizeof(void*) && (reinterpret_cast<unsigned char*>(*get_pointer())-reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1) > max_size)){
                     auto bloc=reinterpret_cast<void *>(reinterpret_cast<void**>(get_pointer())+1);
                     *get_block_size(bloc)=target_size;
                     *get_pointer_to_past_block(bloc)= nullptr;
@@ -220,6 +222,7 @@ public:
                             if (result!= nullptr){
                                 inner_dealloc(result);
                             }
+
                             auto pointer=*get_pointer_to_next_block(current_block);
                             *get_block_size(reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+(*get_block_size(current_block)))=target_size;
 
@@ -231,10 +234,11 @@ public:
 
                             *get_pointer_to_past_block(pointer)=reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block);
 
-                            max_size= reinterpret_cast<unsigned char*>(*get_pointer_to_next_block(current_block)) - (reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block) + 1) + (*get_block_size(current_block)));
+                            max_size = reinterpret_cast<unsigned char*>(*get_pointer_to_next_block(current_block)) - (reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block) + 1) + (*get_block_size(current_block)));
 
                             result=reinterpret_cast<void*>(get_pointer_to_past_block(reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block))+1);
                             current_block=*get_pointer_to_next_block(current_block);
+
                         }else{
                             current_block=*get_pointer_to_next_block(current_block);
                         }
@@ -242,28 +246,25 @@ public:
                         current_block=*get_pointer_to_next_block(current_block);
                     }
                 }
-                if (*get_pointer_to_next_block(current_block)== nullptr && (reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1)+*get_size()-reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)-*get_block_size(current_block))>=target_size+sizeof(size_t)+2*sizeof(void*)){
-                    if ((reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1)+*get_size()-reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)-*get_block_size(current_block)) > max_size){
-                        if (result!= nullptr){
-                            inner_dealloc(result);
-                        }
-                        *get_block_size((reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block)))=target_size;
-
-                        *get_pointer_to_next_block((reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block)))=nullptr;
-
-                        *get_pointer_to_past_block((reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1))+*get_block_size(current_block))=current_block;
-
-                        *get_pointer_to_next_block(current_block)=reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block);
-
-                        result=reinterpret_cast<void*>(get_pointer_to_past_block(reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block))+1);
+                if ((*get_pointer_to_next_block(current_block)== nullptr) && ((reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1)+*get_size()-reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)-*get_block_size(current_block))>=target_size+sizeof(size_t)+2*sizeof(void*)) &&(reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1)+*get_size()-reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)-*get_block_size(current_block) > max_size)){
+                    if (result!= nullptr){
+                        inner_dealloc(result);
                     }
+                    *get_block_size((reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block)))=target_size;
+
+                    *get_pointer_to_next_block((reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block)))=nullptr;
+
+                    *get_pointer_to_past_block((reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1))+*get_block_size(current_block))=current_block;
+
+                    *get_pointer_to_next_block(current_block)=reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block);
+
+                    result=reinterpret_cast<void*>(get_pointer_to_past_block(reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block))+1);
+
 
                 }
                 return result;
-
             }
         }
-
     }
     void deallocate(void* result) const override{
         if (result!= nullptr) {
