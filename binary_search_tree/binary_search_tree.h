@@ -1,6 +1,4 @@
-//
-// Created by HP on 16.07.2023.
-//
+
 
 #ifndef LABS_4_SEM_BINARY_SEARCH_TREE_H
 #define LABS_4_SEM_BINARY_SEARCH_TREE_H
@@ -20,10 +18,15 @@ template<typename  tkey, typename  tvalue, typename tkey_comparer>
 class binary_search_tree : public associative_container<tkey, tvalue> {
 protected:
     struct node{
+        node() = default;
+        node(tkey const &k, tvalue const &v, node* l, node* r):
+                key(k), value(v), left_node(l), right_node(r){}
         tkey key;
         tvalue value;
-        node* right_node;
         node* left_node;
+        node* right_node;
+
+        virtual ~node() = default;
     };
 
     tkey_comparer _comparator;
@@ -356,7 +359,7 @@ private:
     }
 
     /////////////class find_class//////////////////////
-
+protected:
     class find_class{
     protected:
         virtual void after_find(typename associative_container<tkey, tvalue>::key_value_pair* key_value_to_find, node*& current_node, std::stack<node**> way_to_find_node){
@@ -453,84 +456,76 @@ protected:
 
     ////////////////////class insert_class//////////////////////////
 
-    class insert_class: public allocator{
+    class insert_class{
+    public:
+        explicit insert_class(binary_search_tree<tkey, tvalue, tkey_comparer>* this_bst):
+        _tree(this_bst){}
     private:
         binary_search_tree<tkey, tvalue, tkey_comparer>* _tree;
+    protected:
+
+        virtual size_t get_node_size() const {
+            return reinterpret_cast<size_t>(sizeof(node));
+        }
+
+        virtual void get_node_constructor(node** x, const tkey& key, const tvalue& value) const {
+            new (*x) node{key, value, nullptr, nullptr};
+        }
+//    public:
+//        void insert(const tkey& key,const tvalue& value){
+//            std::stack<node *> way_to_insert = std::stack<node*>();
+//            return insert_inner(key, std::forward<tvalue>(value),_tree->_root, way_to_insert);
+//
+//        }
+
     public:
-        insert_class(binary_search_tree<tkey, tvalue, tkey_comparer>* tree){
-            _tree=tree;
-        }
-        void insert(const tkey& key, tvalue&& value){
-            std::stack<node **> way_to_insert;
-            return insert_inner(key, std::forward<tvalue>(value),_tree->_root, way_to_insert);
-
-        }
-    private:
-        void insert_inner(const tkey& key, tvalue&& value, node*& current_node, std::stack<node**> &way_to_insert){
-            node* current_node1 = current_node;
-            if (current_node != nullptr) {
-                while (current_node1->left_node != nullptr || current_node1->right_node != nullptr) {
-                    if (_tree->_comparator(key, current_node1->key) == 0) {
-                        throw std::logic_error("two same keys---------------------------------------------------------------");
-                        return;
-                    }
-                    if (_tree->_comparator(key, current_node1->key) > 0) {
-                        if(current_node1->right_node != nullptr) {
-                            current_node1 = current_node1->right_node;
-                        }else{
-                            break;
-                        }
-                    } else {
-                        if (current_node1->left_node != nullptr) {
-                            current_node1 = current_node1->left_node;
-                        }else{
-                            break;
-                        }
-                    }
+        void insert_inner(const tkey& key, const tvalue& value, node** root, std::stack<node*>* way_to_insert, memory* allocator, logger* logger){
+            node* current_node = *root;
+            int flag;
+            tkey_comparer comparator = tkey_comparer();
+            if (*root == nullptr){
+                *root = reinterpret_cast<node*>(allocator->allocate(get_node_size()));
+                get_node_constructor(root, key, value);
+                way_to_insert->push(*root);
+                if (logger != nullptr){
+                    logger->log("New node ", logger::severity::debug);
                 }
-                if (_tree->_comparator(key, current_node1->key) == 0) {
-                    throw std::logic_error("two same keys");
-                    return;
-                }
-            }
-            if (current_node == nullptr){
-                current_node = reinterpret_cast<node*>(_tree->_allocator->allocate(sizeof(node)));
-                new (current_node) node{key, std::forward<tvalue>(value), nullptr, nullptr};
-                if (!way_to_insert.empty()){
-                    if (_tree->_comparator(key, (*way_to_insert.top())->key) > 0){
-                        (*way_to_insert.top())->right_node=current_node;
-                    }else{
-                        (*way_to_insert.top())->left_node=current_node;
-                    }
-
-                }
-                _tree->_logger->log("Insert new node with key "+ std::to_string(key), logger::severity::information);
-                insert_after(key, current_node, way_to_insert);
                 return;
             }
-            node* next_node;
+            while (current_node != nullptr){
+                int comparer_result = comparator(key, current_node->key);
+                way_to_insert->push(current_node);
+                if (comparer_result == 0){
+                    throw std::logic_error("Identical keys");
+                }else if (comparer_result > 0){
+                    flag = 1;
+                    current_node = current_node->right_node;
+                }else{
+                    flag = 0;
 
-            if (_tree->_comparator(current_node->key,key )>0){
-                next_node=current_node->left_node;
-            }else{
-                next_node=current_node->right_node;
+                    current_node = current_node->left_node;
+                }
             }
-            way_to_insert.push(&current_node);
-            insert_inner(key, std::forward<tvalue>(value), next_node, way_to_insert);
-            way_to_insert.pop();
-            insert_after(key, current_node, way_to_insert);
-
-
-
-
-
-
+            node** tmp;
+            if (flag == 1){
+                tmp =&way_to_insert->top()->right_node;
+            }else{
+                tmp = &way_to_insert->top()->left_node;
+            }
+            (*tmp) = reinterpret_cast<node*>(allocator->allocate(get_node_size()));
+            get_node_constructor(tmp, key, value);
+            way_to_insert->push(*tmp);
+            if (logger != nullptr){
+                logger->log("New node " , logger::severity::debug);
+            }
+        }
+    public:
+        virtual void insert_after(const tkey& key, const tvalue& value, node** root, std::stack<node*>* way_to_insert, logger* logger){
+            while(way_to_insert->empty()) way_to_insert->pop();
 
         }
-    protected:
-        virtual void insert_after(tkey const &key, node*& current_node, std::stack<node **>& way_to_insert){
-
-        }
+    public:
+        virtual ~insert_class() = default;
     };
 
 
@@ -541,101 +536,119 @@ protected:
     private:
         binary_search_tree<tkey, tvalue, tkey_comparer>* _tree;
     public:
-        remove_class(binary_search_tree<tkey, tvalue, tkey_comparer> *tree){
-            _tree = tree;
+        explicit remove_class(binary_search_tree<tkey, tvalue, tkey_comparer> *tree) :
+            _tree(tree){}
+    protected:
+        virtual void node_destructor(node* node1) const{
+            node1->~node();
         }
-        tvalue remove(tkey const &key, node*& current_node){
-            std::stack <node**> way_to_remove;
-            return remove_inner(key, current_node, way_to_remove);
-        }
-    private:
-        tvalue remove_inner(tkey const &key, node*& current_node, std::stack<node**>& way_to_remove){
-            if (current_node == nullptr){
-                throw std::invalid_argument("You want to delete nullptr-node");
-            }
-            if (_tree->_comparator(key, current_node->key)==0) {
-                tvalue removing_value=current_node->value;
-
-                if (current_node->left_node == nullptr && current_node->right_node == nullptr) {
-
-                    if (!way_to_remove.empty()) {
-
-                        if ((*way_to_remove.top())->right_node == current_node){
-                            (*way_to_remove.top())->right_node = nullptr;
-                        }else{
-                            (*way_to_remove.top())->left_node = nullptr;
-                        }
-
-                    }
-                    current_node->~node();
-                    _tree->_allocator->deallocate(current_node);
-                    current_node = nullptr;
+//        tvalue remove(tkey const &key, node*& current_node){
+//            std::stack <node**> way_to_remove;
+//            return remove_inner(key, current_node, way_to_remove);
+//        }
+    public:
+        tvalue remove_inner(tkey const &key, node** root, std::stack<node*>* way_to_remove, memory* allocator, logger* logger){
+            node* current_node = *root;
+            int flag = 2;
+            tkey_comparer comparator = tkey_comparer();
+            while (current_node != nullptr && comparator(key, current_node->key) != 0){
+                if (comparator(key, current_node->key) > 0){
+                    way_to_remove->push(current_node);
+                    current_node = current_node->right_node;
+                    flag = 1;
+                }else{
+                    way_to_remove->push(current_node);
+                    current_node = current_node->left_node;
+                    flag = 0;
                 }
-                else {
-                    if ((current_node->right_node == nullptr && current_node->left_node != nullptr) ||
-                        (current_node->right_node != nullptr && current_node->left_node == nullptr)) {
-                        node *replaced_node =
-                                current_node->left_node == nullptr ? current_node->right_node : current_node->left_node;
-                        if (!way_to_remove.empty()) {
-                            if ((*way_to_remove.top())->left_node == current_node) {
-                                (*way_to_remove.top())->left_node = replaced_node;
-                            } else {
-                                (*way_to_remove.top())->right_node = replaced_node;
-                            }
-                        }
-                        current_node->~node();
-                        _tree->_allocator->deallocate(current_node);
-                        current_node = replaced_node;
-                    } else {
-                        if (current_node->right_node != nullptr && current_node->left_node != nullptr) {
-                            node *min_bin_node = current_node->right_node;
+            }
+            if (current_node == nullptr){
+                throw std::logic_error("There is no such key in the tree");
+            }
 
-                            while (min_bin_node->left_node != nullptr)
-                            {
-                                min_bin_node = min_bin_node->left_node;
-                            }
-
-                            tkey key_current = min_bin_node->key;
-                            tvalue value_current = min_bin_node->value;
-                            _tree->remove(min_bin_node->key);
-
-                            current_node->key = key_current;
-                            current_node->value = value_current;
-//                            node *max_node_in_left_subtree = current_node->left_node;
-//
-//                            while (max_node_in_left_subtree->right_node != nullptr) {
-//                                max_node_in_left_subtree = max_node_in_left_subtree->right_node;
-//                            }
-//                            tkey key_of_max_node = max_node_in_left_subtree->key;
-//                            tvalue value_of_max_node = max_node_in_left_subtree->value;
-
-//                            _tree->remove(max_node_in_left_subtree->key);
-//                            current_node->key = key_of_max_node;
-//                            current_node->value = value_of_max_node;
-                        }
-                    }
+            if (current_node->left_node == nullptr && current_node->right_node == nullptr){
+                if (flag == 1){
+                    way_to_remove->top()->right_node = nullptr;
+                }else if(flag == 0){
+                    way_to_remove->top()->left_node = nullptr;
+                }
+                tvalue removing_value = std::move(current_node->value);
+                node_destructor(current_node);
+                allocator->deallocate(reinterpret_cast<void*>(current_node));
+                if (flag == 2){
+                    *root == nullptr;
+                }
+                if (logger != nullptr){
+                    logger->log("Node successfully deleted", logger::severity::debug);
                 }
                 return removing_value;
-
+            }else if ((current_node->left_node == nullptr && current_node->right_node != nullptr) || (current_node->left_node != nullptr && current_node->right_node == nullptr)){
+                if (current_node->left_node == nullptr && current_node->right_node != nullptr){
+                    if (flag == 2){
+                        *root = current_node->right_node;
+                    }else if (flag == 0){
+                        way_to_remove->top()->left_node = current_node->right_node;
+                    }else{
+                        way_to_remove->top()->right_node = current_node->right_node;
+                    }
+                }else{
+                    if (flag == 2){
+                        *root = current_node->left_node;
+                    }else if (flag == 0){
+                        way_to_remove->top()->left_node = current_node->left_node;
+                    }else{
+                        way_to_remove->top()->right_node = current_node->left_node;
+                    }
+                }
+                tvalue removing_value = std::move(current_node->value);
+                node_destructor(current_node);
+                allocator->deallocate(reinterpret_cast<void*>(current_node));
+                if (logger != nullptr){
+                    logger->log("Node successfully deleted", logger::severity::debug);
+                }
+                return removing_value;
+            }else if (current_node->left_node != nullptr && current_node->right_node != nullptr){
+                node* replace_node = current_node;
+                way_to_remove->push(current_node);
+                replace_node = replace_node->right_node;
+                if (replace_node->left_node == nullptr){
+                    tvalue removing_value = std::move(current_node->value);
+                    current_node->key = replace_node->key;
+                    current_node->value = replace_node->value;
+                    current_node->right_node = replace_node->right_node;
+                    node_destructor(current_node);
+                    allocator->deallocate(reinterpret_cast<void*>(replace_node));
+                    if (logger != nullptr){
+                        logger->log("Node successfully deleted", logger::severity::debug);
+                    }
+                    return removing_value;
+                }else{
+                    while (replace_node->left_node != nullptr){
+                        way_to_remove->push(replace_node);
+                        replace_node = replace_node->left_node;
+                    }
+                    tvalue removing_value = std::move(current_node->value);
+                    current_node->key = replace_node->key;
+                    current_node->value = replace_node->value;
+                    way_to_remove->top()->left_node = replace_node->right_node;
+                    node_destructor(current_node );
+                    allocator->deallocate(reinterpret_cast<void*>(replace_node));
+                    if (logger != nullptr){
+                        logger->log("Node successfully deleted", logger::severity::debug);
+                    }
+                    return removing_value;
+                }
             }
-            node* next_node = current_node;
-            if (_tree->_comparator(key, current_node->key) > 0){
-                next_node = current_node->right_node;
-            }else{
-                next_node = current_node->left_node;
-            }
-            way_to_remove.push(&current_node);
-            tvalue removing_value = remove_inner(key, next_node, way_to_remove);
-            way_to_remove.pop();
-            remove_after(key,current_node, way_to_remove);
-
-            return removing_value;
-
         }
 
-        virtual void remove_after(tkey const& key, node*& current_node, std::stack<node**> &way_to_remove){
+        virtual void remove_after(tkey const& key, node** root, std::stack<node*>* way_to_remove, logger* logger){
+            while (!way_to_remove->empty()){
+                way_to_remove->pop();
+            }
 
         }
+    public:
+        virtual ~remove_class() = default;
 
 
     };
@@ -655,12 +668,20 @@ public:
         return _class_find->find(key_value_to_find,_root);
     }
 
-    void insert( tkey const &key, tvalue&& value)override{
-        return _class_insert->insert(key, std::forward<tvalue>(value));
+    void insert( tkey const &key, const tvalue& value) override{
+        std::stack<node *> insert_way = std::stack<node*>();
+        node** current_root = &_root;
+        _class_insert->insert_inner(key, value, current_root, &insert_way, this->_allocator, this->_logger);
+        _class_insert->insert_after(key, value, current_root, &insert_way, this->_logger);
+
     }
 
-    tvalue remove(tkey const &key)override{
-        return _class_remove->remove(key, _root);
+    tvalue remove(tkey const &key) override{
+        node** current_root = &_root;
+        std::stack<node*> way_to_remove = std::stack<node*>();
+        tvalue remove_value = _class_remove->remove_inner(key,current_root,  &way_to_remove, _allocator, _logger);
+        _class_remove->remove_after(key, current_root, &way_to_remove, _logger);
+        return remove_value;
     }
 
 //    tvalue get(associative_container<tkey, tvalue>::key_value_pair* key_value_to_get)override{
@@ -677,6 +698,49 @@ protected:
         _class_remove = new remove_class(this);
 //        _class_get = new get_class();
     }
+protected:
+    void clear(){
+        clear_inner(_root);
+
+    }
+
+    void clear_inner(node* current_node){
+        if (current_node == nullptr){
+            return;
+        }
+
+        auto* left = current_node->left_node;
+        auto* right = current_node->right_node;
+        current_node->~node();//TODO Get_node_destructor ?
+        _allocator->deallocate(current_node);
+        clear_inner(left);
+        clear_inner(right);
+
+    }
+
+    node* copy() const{
+        copy_inner(_root);
+
+    }
+
+    node* copy_inner(node* current_node) const{
+        if (current_node == nullptr){
+            return nullptr;
+        }
+        auto* new_node = reinterpret_cast<node*>(_allocator->allocate(node_size()));
+        node_construct(new_node, current_node);
+        additional_data(new_node, current_node);
+    }
+
+    virtual size_t node_size() const{
+        return sizeof(node);
+    }
+
+    virtual void node_construct(node* current_node_copy, node* current_node) const{
+        new (current_node_copy) node {current_node->key, current_node->value, copy_inner(current_node->left_node),copy_inner(current_node->right_node)};
+    }
+
+    virtual void additional_data(node* current_node_copy, node* current_node) const{}
 
 public:
     /////////////tree constructor//////////////////
@@ -739,20 +803,12 @@ public:
         copy_nodes(other_tree._root);
     }
     binary_search_tree<tkey, tvalue, tkey_comparer>& operator=(const binary_search_tree<tkey, tvalue, tkey_comparer> &other_tree){
-        if(_root!= nullptr){
-            postfix_iterator it;
-            auto end_it=postfix_it_end();
-            for (it=postfix_it_begin(); it != end_it; it++){///todo
-                it.get_node()->~get_node();
-                _allocator->deallocate(it.get_node());
-            }
-            _root= nullptr;
-            this->copy_nodes(other_tree._root);
-            return *this;
-        }else{
-            this->copy_nodes(other_tree._root);
+        if (other_tree == *this){
             return *this;
         }
+        this->clear();
+        _root = other_tree.copy();
+        return *this;
     }
     binary_search_tree(binary_search_tree<tkey, tvalue, tkey_comparer>&& other_tree){
         _allocator = other_tree._allocator;
@@ -770,28 +826,25 @@ public:
         other_tree._root= nullptr;
     }
     binary_search_tree<tkey, tvalue, tkey_comparer>& operator=(const binary_search_tree<tkey, tvalue, tkey_comparer>&& other_tree){
-        if (*this==other_tree){
-            return *this;
+        if (*this != other_tree){
+
+            this->clear();
+            _root = other_tree._root;
+            _allocator = other_tree._allocator;
+            _logger = other_tree._logger;
+            delete other_tree._class_insert;
+            delete other_tree._class_remove;
+            delete other_tree._class_find;
+            other_tree._root = nullptr;
+            other_tree._allocator = nullptr;
+            other_tree._class_insert = nullptr;
+            other_tree._logger = nullptr;
+            other_tree._class_find = nullptr;
+            other_tree._class_remove = nullptr;
         }
-        _allocator = other_tree._allocator;
-        _logger = other_tree._logger;
-        _comparator = std::move(other_tree._comparator);///??
-        other_tree._class_insert = nullptr;
-        other_tree._class_remove = nullptr;
-        other_tree._class_find = nullptr;
-        other_tree._class_get= nullptr;
-        if(_root!= nullptr){
-            _root= other_tree._root;
-            postfix_iterator it;
-            auto end_it=other_tree.postfix_it_end();
-            for (it=other_tree.postfix_it_begin(); it != other_tree.end_it; it++){///???
-                it.get_node()->~node();
-                _allocator->deallocate(it.get_node());
-            }
-            return *this;
-        }else{
-            return *this;
-        }
+
+
+        return *this;
     }
 
 protected:
@@ -822,28 +875,21 @@ public:
                 std::cout << "key: " << std::get<1>(*it) << ", value: \"" << std::get<2>(*it) << "\"" << std::endl;
             }
         }
-        debug_tree_printing<tkey, tvalue>(_root);
+        debug_print(_root);
     }
 protected:
-    virtual void left_mini_rotate(node** current_node)const{
+    void left_mini_rotate(node** current_node) const{
         node* right_subtree = (*current_node)->right_node;
         (*current_node)->right_node = right_subtree->left_node;
         right_subtree->left_node = (*current_node);
-        *current_node = right_subtree;
+        (*current_node) = right_subtree;
     }
 
-    virtual void right_mini_rotate(node** current_node)const{
+    void right_mini_rotate(node** current_node) const{
         node* left_subtree = (*current_node)->left_node;
         (*current_node)->left_node = left_subtree->right_node;
         left_subtree->right_node = (*current_node);
-        *current_node = left_subtree;
+        (*current_node) = left_subtree;
     }
-
-
-
-
-
 };
-
-
 #endif //LABS_4_SEM_BINARY_SEARCH_TREE_H

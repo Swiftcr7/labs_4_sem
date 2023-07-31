@@ -1,41 +1,45 @@
-#ifndef LABS_4_SEM_PRINT_BST_H
-#define LABS_4_SEM_PRINT_BST_H
-
+#ifndef LABS_4_SEM_PRINT_AVL_H
+#define LABS_4_SEM_PRINT_AVL_H
 #include <functional>
 #include <iostream>
 #include <vector>
 #include "make_string.h"
+#include <functional>
+#include <iostream>
+#include <vector>
+#include "../binary_search_tree/make_string.h"
 
 
 template <typename tkey, typename tvalue>
-struct debug_node{
-    debug_node() = default;
-    debug_node(tkey k, tvalue v, debug_node* l, debug_node* r):
-            key(k), value(v), left(l), right(r){}
+struct debug_avl_node final{
+    debug_avl_node() = default;
+    debug_avl_node(const tkey& k, const tvalue& v, debug_avl_node* l, debug_avl_node* r, size_t h):
+            key(k), value(v), left(l), right(r), height(h){}
 
     tkey key;
     tvalue value;
-    debug_node* right;
-    debug_node* left;
+    debug_avl_node* left;
+    debug_avl_node* right;
+    size_t height;
 
-    virtual ~debug_node() = default;
+    virtual ~debug_avl_node() = default;
 };
 
 template <typename tkey, typename tvalue>
-void debug_tree_printing(void* root) {
-    auto node_concrete = reinterpret_cast<debug_node<tkey, tvalue>*>(root);
+void debug_avl_tree_printing(void* root) {
+    auto node_concrete = reinterpret_cast<debug_avl_node<tkey, tvalue>*>(root);
 
     if(node_concrete == nullptr){
-        std::cout << "~~~ DEBUG TREE PRINTING ~~~" << std::endl;
+        std::cout << "~~~ DEBUG AVL_TREE PRINTING ~~~" << std::endl;
         std::cout << "empty" << std::endl;
-        std::cout << "~~~ DEBUG TREE PRINTING ~~~" << std::endl;
+        std::cout << "~~~ DEBUG AVL_TREE PRINTING ~~~" << std::endl;
         return;
     }
 
 #define MAX_(x, y) ((x) > (y) ? (x) : (y))
 #define MIN_(x, y) ((x) < (y) ? (x) : (y))
 
-    std::cout << "~~~ DEBUG TREE PRINTING ~~~" << std::endl;
+    std::cout << "~~~ DEBUG AVL_TREE PRINTING ~~~" << std::endl;
 
     static std::string ch_hor = "-", ch_ver = "|", ch_ddia = "/", ch_rddia = "\\", ch_udia = "\\", ch_ver_hor = "|-", ch_udia_hor = "\\-", ch_ddia_hor = "/-", ch_ver_spa = "| ";
     auto RepStr = [](std::string const & s, size_t cnt) {
@@ -46,12 +50,15 @@ void debug_tree_printing(void* root) {
             r += s;
         return r;
     };
-    std::function<std::tuple<std::vector<std::string>, size_t, size_t>(debug_node<tkey, tvalue>* node_concrete, bool)> Rec;
-    Rec = [&RepStr, &Rec](debug_node<tkey, tvalue>* node_concrete, bool left){
+    std::function<std::tuple<std::vector<std::string>, size_t, size_t>(debug_avl_node<tkey, tvalue>* node_concrete, bool)> Rec;
+    Rec = [&RepStr, &Rec](debug_avl_node<tkey, tvalue>* node_concrete, bool left){
         std::vector<std::string> lines;
         if (!node_concrete)
             return std::make_tuple(lines, size_t(0), size_t(0));
         auto sval = make_string(node_concrete->key);
+        sval += "[";
+        sval += make_string(node_concrete->height);
+        sval += "]";
         auto resl = Rec(node_concrete->left, true), resr = Rec(node_concrete->right, false);
         auto const & vl = std::get<0>(resl);
         auto const & vr = std::get<0>(resr);
@@ -82,11 +89,12 @@ void debug_tree_printing(void* root) {
     for (const auto& i : v)
         std::cout << i << std::endl;
 
-    std::cout << "~~~ DEBUG TREE PRINTING ~~~" << std::endl;
+    std::cout << "~~~ DEBUG AVL_TREE PRINTING ~~~" << std::endl;
 
 #undef MAX_
 #undef MIN_
 }
 
 
-#endif //LABS_4_SEM_PRINT_BST_H
+////TODO: ------------------- FOR DEBUG ONLY! -------------------
+#endif //LABS_4_SEM_PRINT_AVL_H

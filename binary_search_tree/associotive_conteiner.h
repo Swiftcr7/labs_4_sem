@@ -27,7 +27,7 @@ public:
 
     virtual void insert(
             tkey const &key,
-            tvalue &&value) = 0;
+            const tvalue &value) = 0;
 
     void operator+=(
             key_value_pair pair);
