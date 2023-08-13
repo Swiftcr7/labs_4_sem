@@ -15,8 +15,8 @@ struct debug_node{
 
     tkey key;
     tvalue value;
-    debug_node* right;
     debug_node* left;
+    debug_node* right;
 
     virtual ~debug_node() = default;
 };

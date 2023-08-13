@@ -48,13 +48,13 @@ private:
     public:
         prefix_iterator(node* current_node, binary_search_tree<tkey, tvalue, tkey_comparer>* tree) {
             _tree = tree;
-            node* rightest_node = _tree->_root;
-            if (rightest_node != nullptr) {
-                while (rightest_node->right_node != nullptr) {
-                    rightest_node = rightest_node->right_node;
+            _rightest_node = _tree->_root;
+            if (_rightest_node != nullptr) {
+                while (_rightest_node->right_node != nullptr) {
+                    _rightest_node = _rightest_node->right_node;
                 }
             }
-            _rightest_node=rightest_node;
+            _way = std::stack<node*>();
             if (current_node != nullptr) {
                 _current_node = current_node;
                 node *ptr = _tree->_root;
@@ -68,7 +68,6 @@ private:
                 }
             } else {
                 _current_node = nullptr;
-                _way = std::stack<node *>();
             }
         }
     public:
@@ -81,41 +80,49 @@ private:
         }
 
         bool operator!=(prefix_iterator const &other) const{
-            return !(*this==other);
+            return !(*this == other);
         }
 
         prefix_iterator& operator++(){
-            if(_current_node ==_rightest_node ){
-                _current_node= nullptr;
-                _way=std::stack<node*>();
+            if (_current_node == nullptr){
                 return *this;
-
             }
-            if(_current_node->left_node!= nullptr) {
+            if(_current_node ==_rightest_node ){
+                if (_rightest_node == _tree->_root && _tree->_root->left_node != nullptr){
+                    _way.push(_current_node);
+                    _current_node = _current_node->left_node;
+                }else {
+                    _current_node = nullptr;
+                    _way=std::stack<node*>();
+                }
+                return *this;
+            }else if(_current_node->left_node != nullptr) {
                 _way.push(_current_node);
                 _current_node = _current_node->left_node;
                 return *this;
-            }
-            if ( _current_node->left_node== nullptr && _current_node->right_node!= nullptr){
+            }else if ( _current_node->left_node == nullptr && _current_node->right_node != nullptr){
                 _way.push(_current_node);
                 _current_node = _current_node->right_node;
                 return *this;
-            }
-
-            if (_current_node->left_node== nullptr && _current_node->right_node== nullptr) {
-                while(!_way.empty() && (_way.top()->right_node == _current_node || _way.top()->right_node == nullptr)){
-                    while (!_way.empty() && _way.top()->right_node == _current_node) {
-                        _current_node = _way.top();
-                        _way.pop();
-                    }
-
-                    while (!_way.empty() && _way.top()->right_node == nullptr) {
-                        _current_node = _way.top();
-                        _way.pop();
-                    }
+            }else if (_current_node->left_node == nullptr && _current_node->right_node == nullptr) {
+                while(!_way.empty() && ((_way.top()->left_node == _current_node && _way.top()->right_node == nullptr) || _way.top()->right_node == _current_node)){
+                    _current_node = _way.top();
+                    _way.pop();
                 }
-                _current_node=_way.top()->right_node;
-                return *this;
+                if (_way.empty()){
+                    if (_tree->_root->right_node == nullptr){
+                        _current_node = nullptr;
+                        _way = std::stack<node*>();
+                        return *this;
+                    } else{
+                    _current_node = _tree->_root->right_node;
+                    }
+                } else {
+                    _current_node = _way.top()->right_node;
+                    return *this;
+                }
+
+
             }
 
         }
@@ -314,6 +321,7 @@ private:
     prefix_iterator prefix_it_end()const noexcept{
         return prefix_iterator(nullptr, const_cast<binary_search_tree<tkey, tvalue, tkey_comparer>*>(this));
     }
+
 
     /////////////begin/end infix//////////////////////
 
@@ -576,7 +584,7 @@ protected:
                 node_destructor(current_node);
                 allocator->deallocate(reinterpret_cast<void*>(current_node));
                 if (flag == 2){
-                    *root == nullptr;
+                    *root = nullptr;
                 }
                 if (logger != nullptr){
                     logger->log("Node successfully deleted", logger::severity::debug);

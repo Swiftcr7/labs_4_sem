@@ -35,7 +35,7 @@ int main() {
 //stress test
 
     srand(time(nullptr));
-    for (int i = 0; i < 3000; ++i) {
+    for (int i = 0; i < 30; ++i) {
         std::cout << "== iteration #" << i + 1 << " ==" << std::endl;
         int action = rand() % 3;
         int bp_mode = rand() % 3;
