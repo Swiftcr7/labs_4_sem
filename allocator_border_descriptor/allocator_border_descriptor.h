@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <limits.h>
-#include "../../scc//allocator2.h"   //TODO: fix path!!!!!
+#include  "../allocator_operator_new/allocator_operator_new.h"   //TODO: fix path!!!!!
 
 class allocator_border_descriptor final : public memory{
 private:
@@ -81,7 +81,7 @@ public:
         *reinterpret_cast<logger**>(reinterpret_cast<memory**>(_global_memory)+1) = my_logger;
         *reinterpret_cast<detour*>(reinterpret_cast<logger**>(reinterpret_cast<memory**>(_global_memory)+1)+1)=det;
         *reinterpret_cast<size_t*>(reinterpret_cast<detour*>(reinterpret_cast<logger**>(reinterpret_cast<memory**>(_global_memory)+1)+1)+1)=size;
-        *reinterpret_cast<void**>(reinterpret_cast<size_t*>(reinterpret_cast<detour*>(reinterpret_cast<logger**>(reinterpret_cast<memory**>(_global_memory)+1)+1)+1)+1)= nullptr;
+        *reinterpret_cast<void**>(reinterpret_cast<size_t*>(reinterpret_cast<detour*>(reinterpret_cast<logger**>(reinterpret_cast<memory**>(_global_memory)+1)+1)+1)+1) = nullptr;
     }
     void* allocate(size_t target_size)const override{
         if (*get_pointer()== nullptr){
@@ -138,7 +138,7 @@ public:
             }
             case detour::best:{
                 void* res= nullptr;
-                int min_size=INT_MAX;
+                int min_size = INT_MAX;
                 auto current_block= *get_pointer();
                 if (reinterpret_cast<unsigned char*>(*get_pointer())-reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1)>=target_size+sizeof(size_t)+2*sizeof(void*) && reinterpret_cast<unsigned char*>(*get_pointer())-reinterpret_cast<unsigned char*>(reinterpret_cast<void**>(get_pointer())+1)<min_size){
                     auto bloc=reinterpret_cast<void *>(reinterpret_cast<void**>(get_pointer())+1);
@@ -250,11 +250,11 @@ public:
                     if (result!= nullptr){
                         inner_dealloc(result);
                     }
-                    *get_block_size((reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block)))=target_size;
+                    *get_block_size((reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block))) = target_size;
 
-                    *get_pointer_to_next_block((reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block)))=nullptr;
+                    *get_pointer_to_next_block((reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block))) = nullptr;
 
-                    *get_pointer_to_past_block((reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1))+*get_block_size(current_block))=current_block;
+                    *get_pointer_to_past_block((reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1))+*get_block_size(current_block)) = current_block;
 
                     *get_pointer_to_next_block(current_block)=reinterpret_cast<unsigned char*>(get_pointer_to_past_block(current_block)+1)+*get_block_size(current_block);
 
@@ -266,8 +266,9 @@ public:
             }
         }
     }
+
     void deallocate(void* result) const override{
-        if (result!= nullptr) {
+        if (result != nullptr) {
             inner_dealloc(result);
             auto block = reinterpret_cast<void *>(reinterpret_cast<unsigned char *>(result) - 2 * sizeof(void *) -sizeof(size_t));
 
@@ -287,14 +288,12 @@ public:
 
     }
 
-
-    ~allocator_border_descriptor(){
+    ~allocator_border_descriptor() override{
         if (*get_allocator()== nullptr){
             ::operator delete(_global_memory);
         }else{
             (*get_allocator())->deallocate(_global_memory);
         }
-
     }
 
 };

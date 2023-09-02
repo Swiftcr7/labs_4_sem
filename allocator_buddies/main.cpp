@@ -92,6 +92,27 @@ int main() {
     logger* mylogger = builder->add_stream("console", logger::severity::debug)->add_stream("C:\\Users\\HP\\CLionProjects\\labs_4_sem\\allocator_buddies\\logs.txt", logger::severity::debug)->construct();
     memory* alloc = new allocator_buddies( 60000, mylogger, nullptr);
     testing_allocator(alloc, mylogger,  15000);
+//        int* arr = reinterpret_cast<int *>(alloc->allocate(sizeof(int) * 10));
+//    for (int i = 0; i < 10; i++){
+//        arr[i] = i*100;
+//        std::cout << arr[i] << std::endl;
+//    }
+//    int* arr1 = reinterpret_cast<int *>(alloc->allocate(sizeof(int) * 10));
+//    for (int i = 0; i < 10; i++){
+//        arr1[i] = i*100;
+//        std::cout << arr1[i] << std::endl;
+//    }
+//    char *str = reinterpret_cast<char *>(alloc->allocate(sizeof(char) * 11));
+//    std::strcpy(str, "0123456789");
+//    alloc->deallocate(arr1);
+//    int* arr2 = reinterpret_cast<int *>(alloc->allocate(sizeof(int) * 10));
+//    for (int i = 0; i < 10; i++){
+//        arr2[i] = i*100;
+//        std::cout << arr2[i] << std::endl;
+//    }
+//    alloc->deallocate(arr);
+//    alloc->deallocate(arr2);
+//    alloc->deallocate(str);
     delete alloc;
     delete mylogger;
     delete builder;

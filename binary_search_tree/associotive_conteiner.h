@@ -25,6 +25,8 @@ public:
 
 public:
 
+    virtual const tvalue& get(const tkey &key) const = 0;
+
     virtual void insert(
             tkey const &key,
             const tvalue &value) = 0;
@@ -41,8 +43,6 @@ public:
     virtual tvalue remove(
             tkey const &key) = 0;
 
-//    virtual tvalue get(
-//            key_value_pair *target_key_and_result_value) = 0;
 
 
     tvalue operator-=(

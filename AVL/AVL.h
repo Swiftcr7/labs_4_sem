@@ -22,9 +22,9 @@ protected:
 
 protected:
 
-    void debug_print(void* root) const override {
-        debug_avl_tree_printing<tkey, tvalue>(reinterpret_cast<void*>(root));
-    }
+//    void debug_print(void* root) const override {
+//        debug_avl_tree_printing<tkey, tvalue>(reinterpret_cast<void*>(root));
+//    }
 
 
     class AVL_insert_class final : public  binary_search_tree<tkey, tvalue, tkey_comparer>::insert_class{
@@ -71,40 +71,39 @@ protected:
             auto* AVL_way_to_insert = reinterpret_cast<std::stack<node_AVL*>*>(way_to_insert);
             insert_after_inner(AVL_root, AVL_way_to_insert, logger);
             if (logger != nullptr){
-                logger->log("Balancing completed", logger::severity::debug);
+                logger->log("Balafncing is successful", logger::severity::debug);
             }
         }
     private:
         void insert_after_inner(node_AVL** root, std::stack<node_AVL*>* way_to_insert, logger* logger) const{
             node_AVL* current_node = way_to_insert->top();
             way_to_insert->pop();
+            typename binary_search_tree<tkey, tvalue, tkey_comparer>::node** dad;
+            if (!way_to_insert->empty()){
+                if (reinterpret_cast<node_AVL*>(way_to_insert->top()->left_node) == current_node){
+                    dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(&(way_to_insert->top()->left_node));
+                }else{
+                    dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(&(way_to_insert->top()->right_node));
+                }
+            }else{
+                dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(root);
+            }
             if (balance_difference(current_node) > 1){
                 auto* a = reinterpret_cast<node_AVL*>(current_node->left_node);
                 auto* b = current_node;
-                typename binary_search_tree<tkey, tvalue, tkey_comparer>::node** dad;
-                if (!way_to_insert->empty()){
-                    if (reinterpret_cast<node_AVL*>(way_to_insert->top()->left_node) == current_node){
-                        dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(&(way_to_insert->top()->left_node));
-                    }else{
-                        dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(&(way_to_insert->top()->right_node));
-                    }
-                }else{
-                    dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(root);
-                }
                 if (balance_difference(a) < 0){
                     auto* c = reinterpret_cast<node_AVL*>(a->right_node);
                     auto* d = a;
                     _tree->left_mini_rotate(reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(&(current_node->left_node)));
-                    logger->log("left mini rotate", logger::severity::debug);
+                    if(logger != nullptr) logger->log("left mini rotate", logger::severity::debug);
                     set_height(d);
                     set_height(c);
-                    //a = reinterpret_cast<node_AVL*>(current_node->left_node);
                 }
                 _tree->right_mini_rotate(dad);
-                logger->log("right mini rotate", logger::severity::debug);
+                if (logger != nullptr) logger->log("right mini rotate", logger::severity::debug);
                 set_height(b);
                 set_height(a);
-                logger->log("Internal balancing", logger::severity::debug);
+                if (logger != nullptr) logger->log("Internal balancing", logger::severity::debug);
                 if (!way_to_insert->empty()){
                     insert_after_inner(root, way_to_insert, logger);
                 }
@@ -112,30 +111,20 @@ protected:
             }else if(balance_difference(current_node) < -1){
                 auto* a = reinterpret_cast<node_AVL*>(current_node->right_node);
                 auto* b = current_node;
-                typename binary_search_tree<tkey, tvalue, tkey_comparer>::node** dad;
-                if (!way_to_insert->empty()){
-                    if (reinterpret_cast<node_AVL*>(way_to_insert->top()->left_node) == current_node){
-                        dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(&(way_to_insert->top()->left_node));
-                    }else{
-                        dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(&(way_to_insert->top()->right_node));
-                    }
-                }else{
-                    dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(root);
-                }
                 if (balance_difference(a) > 0){
                     auto* c = reinterpret_cast<node_AVL*>(a->left_node);
                     auto* d = a;
                     _tree->right_mini_rotate(reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(&(current_node->right_node)));
-                    logger->log("right mini rotate", logger::severity::debug);
+                    if(logger!= nullptr) logger->log("right mini rotate", logger::severity::debug);
                     set_height(d);
                     set_height(c);
                     //a = reinterpret_cast<node_AVL*>(current_node->right_node);//TODO checking without it
                 }
                 _tree->left_mini_rotate(dad);
-                logger->log("left mini rotate", logger::severity::debug);
+                if(logger != nullptr) logger->log("left mini rotate", logger::severity::debug);
                 set_height(b);
                 set_height(a);
-                logger->log("Internal balancing", logger::severity::debug);
+                if (logger != nullptr) logger->log("Internal balancing", logger::severity::debug);
                 if (!way_to_insert->empty()){
                     insert_after_inner(root, way_to_insert, logger);
                 }
@@ -187,33 +176,33 @@ public:
             }
             node_AVL* current_node = way_to_remove->top();
             way_to_remove->pop();
+            typename binary_search_tree<tkey, tvalue, tkey_comparer>::node** dad;
+            if (!way_to_remove->empty()){
+                if (reinterpret_cast<node_AVL*>(way_to_remove->top()->left_node) == current_node){
+                    dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(&way_to_remove->top()->left_node);
+                }else{
+                    dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(&way_to_remove->top()->right_node);
+                }
+            }else{
+                dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(root);
+            }
             if (balance_difference(current_node) > 1){
                 auto* a = reinterpret_cast<node_AVL*>(current_node->left_node);
                 auto* b = current_node;
-                typename binary_search_tree<tkey, tvalue, tkey_comparer>::node** dad;
-                if (!way_to_remove->empty()){
-                    if (reinterpret_cast<node_AVL*>(way_to_remove->top()->left_node) == current_node){
-                        dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(&way_to_remove->top()->left_node);
-                    }else{
-                        dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(&way_to_remove->top()->right_node);
-                    }
-                }else{
-                    dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(root);
-                }
                 if (balance_difference(a) < 0){
                     auto* c = reinterpret_cast<node_AVL*>(a->right_node);
                     auto* d = a;
                     _tree->left_mini_rotate(reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(&(current_node->left_node)));
-                    logger->log("left mini rotate", logger::severity::debug);
+                    if(logger != nullptr) logger->log("left mini rotate", logger::severity::debug);
                     set_height(d);
                     set_height(c);
                     //a = reinterpret_cast<node_AVL*>(current_node->left_node);
                 }
                 _tree->right_mini_rotate(dad);
-                logger->log("right mini rotate", logger::severity::debug);
+                if (logger != nullptr) logger->log("right mini rotate", logger::severity::debug);
                 set_height(b);
                 set_height(a);
-                logger->log("Internal balancing", logger::severity::debug);
+                if (logger != nullptr) logger->log("Internal balancing", logger::severity::debug);
                 if (!way_to_remove->empty()){
                     remove_after_inner(root, way_to_remove, logger);
                 }
@@ -221,30 +210,20 @@ public:
             }else if(balance_difference(current_node) < -1){
                 auto* a = reinterpret_cast<node_AVL*>(current_node->right_node);
                 auto* b = current_node;
-                typename binary_search_tree<tkey, tvalue, tkey_comparer>::node** dad;
-                if (!way_to_remove->empty()){
-                    if (reinterpret_cast<node_AVL*>(way_to_remove->top()->left_node) == current_node){
-                        dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(&way_to_remove->top()->left_node);
-                    }else{
-                        dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(&way_to_remove->top()->right_node);
-                    }
-                }else{
-                    dad = reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(root);
-                }
                 if (balance_difference(a) > 0){
                     auto* c = reinterpret_cast<node_AVL*>(a->left_node);
                     auto* d = a;
                     _tree->right_mini_rotate(reinterpret_cast<typename binary_search_tree<tkey, tvalue, tkey_comparer>::node**>(&(current_node->right_node)));
-                    logger->log("right mini rotate", logger::severity::debug);
+                    if (logger != nullptr) logger->log("right mini rotate", logger::severity::debug);
                     set_height(d);
                     set_height(c);
                     //a = reinterpret_cast<node_AVL*>(current_node->right_node);//TODO checking without it
                 }
                 _tree->left_mini_rotate(dad);
-                logger->log("left mini rotate", logger::severity::debug);
+                if (logger != nullptr) logger->log("left mini rotate", logger::severity::debug);
                 set_height(b);
                 set_height(a);
-                logger->log("Internal balancing", logger::severity::debug);
+                if (logger != nullptr) logger->log("Internal balancing", logger::severity::debug);
                 if (!way_to_remove->empty()){
                     remove_after_inner(root, way_to_remove, logger);
                 }
@@ -264,7 +243,7 @@ public:
             auto* AVL_way_to_remove = reinterpret_cast<std::stack<node_AVL*>*>(way_to_remove);
             remove_after_inner(AVL_root, AVL_way_to_remove, logger);
             if (logger != nullptr){
-                logger->log("balancing is successful", logger::severity::debug);
+                logger->log("Balancing is successful", logger::severity::debug);
             }
         }
     };
@@ -287,7 +266,7 @@ private:
 public:
 
     explicit AVL_tree(memory* alloc_tree = nullptr, logger* log_tree = nullptr):
-            binary_search_tree<tkey, tvalue, tkey_comparer>(alloc_tree, log_tree, nullptr, new typename binary_search_tree<tkey, tvalue, tkey_comparer>::find_class() ,new AVL_insert_class(this), new AVL_remove_class(this))
+            binary_search_tree<tkey, tvalue, tkey_comparer>(alloc_tree, log_tree, nullptr, new typename binary_search_tree<tkey, tvalue, tkey_comparer>::find_class() , new AVL_insert_class(this), new AVL_remove_class(this))
     {
 //
     }
@@ -350,10 +329,5 @@ public:
     ~AVL_tree(){
 
     }
-
-
-
 };
-
-
 #endif //LABS_4_SEM_AVL_H

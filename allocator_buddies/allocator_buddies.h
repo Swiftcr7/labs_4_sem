@@ -1,7 +1,7 @@
 #ifndef LABS_4_SEM_ALLOCATOR_BUDDIES_H
 #define LABS_4_SEM_ALLOCATOR_BUDDIES_H
 #include <iostream>
-#include "../../scc//allocator2.h"
+#include "../allocator_operator_new/allocator_operator_new.h"
 #include <cmath>
 class allocator_buddies final : public memory{
 private:
@@ -98,7 +98,7 @@ public:
         }
     }
 public:
-    void* allocate(size_t target_size) const override{
+     void* allocate(size_t target_size) const override{
         logger* log = *get_logger();
         if (log != nullptr){
             log->log("---------The allocate has started working--------", logger::severity::debug);
@@ -159,16 +159,16 @@ public:
 
         auto* current_block = reinterpret_cast<void*>(reinterpret_cast<unsigned char*>(result) - 1);
         size_t size = static_cast<int>((*get_size_block(current_block)) >> 1);
-        std::string result_log = "[ ";
-        for (int i = 0; i < 1<<size; i++) {
-            unsigned char a = *(reinterpret_cast<unsigned char *>(result) + i);
-            result_log += std::to_string(static_cast<unsigned short>(a));
-            result_log += " ";
-        }
-        std::string result_msg = "Block to deallocate: " + result_log + "]";
-        if (log != nullptr) {
-            log->log(result_msg, logger::severity::debug);
-        }
+//        std::string result_log = "[ ";
+//        for (int i = 0; i < 1<<size; i++) {
+//            unsigned char a = *(reinterpret_cast<unsigned char *>(result) + i);
+//            result_log += std::to_string(static_cast<unsigned short>(a));
+//            result_log += " ";
+//        }
+//        std::string result_msg = "Block to deallocate: " + result_log + "]";
+//        if (log != nullptr) {
+//            log->log(result_msg, logger::severity::debug);
+//        }
         void* previous_block = nullptr;
         void* next_block = *get_pointer_first();
         while (next_block != nullptr && reinterpret_cast<unsigned char*>(current_block) - reinterpret_cast<unsigned char*>(next_block) > 0){

@@ -5,7 +5,7 @@
 #include <ctime>
 #include <limits>
 #include "binary_search_tree.h"
-
+#include "../allocator_on_sorted_list//allocator_on_sorted_list.h"
 
 
 class my_int_comparer
@@ -23,7 +23,7 @@ int main() {
 
     logger *logger1 = builder->add_stream("console", logger::severity::debug)
             ->construct();
-    memory *alloc = new allocator();
+    memory *alloc = new allocator_on_sorted_list(10000000, allocator_on_sorted_list::detour::first);
     associative_container<int, std::string> *bst = new binary_search_tree<int, std::string, my_int_comparer>(alloc,
                                                                                                              logger1);
 //    auto* bst = new binary_search_tree<int, string, my_int_comparer>(allocator, logger1);
@@ -35,7 +35,7 @@ int main() {
 //stress test
 
     srand(time(nullptr));
-    for (int i = 0; i < 30; ++i) {
+    for (int i = 0; i < 15000; ++i) {
         std::cout << "== iteration #" << i + 1 << " ==" << std::endl;
         int action = rand() % 3;
         int bp_mode = rand() % 3;

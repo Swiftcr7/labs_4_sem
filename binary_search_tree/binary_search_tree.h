@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include <stack>
-#include "../../scc//allocator2.h"
+#include  "../allocator_operator_new/allocator_operator_new.h"
 #include "associotive_conteiner.h"
 #include <functional>
 #include <vector>
@@ -313,7 +313,7 @@ private:
     };
 
     /////////////begin/end prefix//////////////////////
-
+public:
     prefix_iterator prefix_it_begin()const noexcept{
         return prefix_iterator(_root, const_cast<binary_search_tree<tkey, tvalue, tkey_comparer>*>(this));
     }
@@ -324,7 +324,7 @@ private:
 
 
     /////////////begin/end infix//////////////////////
-
+public:
     infix_iterator infix_it_begin()const noexcept{
         node* ptr=_root;
         if(ptr!= nullptr){
@@ -342,7 +342,7 @@ private:
     /////////////begin/end postfix//////////////////////
 
 
-
+public:
     postfix_iterator postfix_it_begin()const noexcept{
         node* ptr = _root;
         if (_root == nullptr){
@@ -458,6 +458,30 @@ protected:
 //
 //        virtual ~get_class() = default;
 //    };
+public:
+    const tvalue& get(const tkey &key) const override{
+        node* current_node = _root;
+        if (_root == nullptr){
+            throw std::logic_error("There is no root");
+        }
+        tkey_comparer comparer = tkey_comparer();
+        if (comparer(key, _root->key) == 0){
+            return _root->value;
+        }
+        while ((current_node->left_node != nullptr && comparer(key, current_node->key) < 0) || (current_node->right_node !=
+                nullptr && comparer(key, current_node->key) > 0)){
+            if (comparer(key, current_node->key) < 0){
+                current_node = current_node->left_node;
+            }else{
+                current_node = current_node->right_node;
+            }
+
+            if (comparer(key, current_node->key) == 0){
+                return current_node->value;
+            }
+        }
+        throw std::logic_error("There is no such key");
+    }
 
 
 protected:
@@ -516,7 +540,7 @@ protected:
             }
             node** tmp;
             if (flag == 1){
-                tmp =&way_to_insert->top()->right_node;
+                tmp = &way_to_insert->top()->right_node;
             }else{
                 tmp = &way_to_insert->top()->left_node;
             }
@@ -692,6 +716,50 @@ public:
         return remove_value;
     }
 
+    tkey& ref_key(const tkey& key) const{
+        node* current_node = _root;
+        if (current_node == nullptr){
+            throw std::logic_error("Empty");
+        }
+        tkey_comparer comparator = tkey_comparer();
+        if (comparator(key, current_node->key) == 0){
+            return current_node->key;
+        }
+        while (((current_node->left_node != nullptr) && (comparator(key, current_node->key) < 0)) || ((current_node->right_node != nullptr) && (comparator(key, current_node->key) > 0))){
+            if (comparator(key, current_node->key) > 0){
+                current_node = current_node->right_node;
+            } else{
+                current_node = current_node->left_node;
+            }
+            if (comparator(key, current_node->key) == 0){
+                return current_node->key;
+            }
+        }
+        throw std::logic_error("No key");
+    }
+
+    bool find_key(const tkey& key){
+        node* current_node = _root;
+        tkey_comparer comparator = tkey_comparer();
+        if (current_node != nullptr){
+            if (comparator(key, current_node->key) == 0){
+                return true;
+            }
+            while((current_node->left_node != nullptr && comparator(key, current_node->key) < 0) || (current_node->right_node !=
+                    nullptr && comparator(key, current_node->key) > 0)){
+                if (comparator(key, current_node->key) > 0){
+                    current_node = current_node->right_node;
+                } else{
+                    current_node = current_node->left_node;
+                }
+                if (comparator(key, current_node->key) == 0){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 //    tvalue get(associative_container<tkey, tvalue>::key_value_pair* key_value_to_get)override{
 //        return _class_get->get(key_value_to_get, _root);
 //    }
@@ -783,7 +851,6 @@ public:
             _allocator->deallocate(it.get_node());
         }
         delete _class_find;
-        delete _class_find;
         delete _class_insert;
         delete _class_remove;
 //        delete _class_get;
@@ -857,33 +924,33 @@ public:
 
 protected:
 
-    virtual void debug_print(void* root) const {
-        debug_tree_printing<tkey, tvalue>(root);
-    }
+//    virtual void debug_print(void* root) const {
+//        debug_tree_printing<tkey, tvalue>(root);
+//    }
 
 public:
-    void bypass_tree(typename associative_container<tkey, tvalue>::bypass_detour detour )const override {
-        if (detour == associative_container<tkey, tvalue>::bypass_detour::prefix) {
-
-            for (auto it = prefix_it_begin(); it != prefix_it_end(); ++it) {
-
-                std::cout << "key: " << std::get<1>(*it) << ", value: \"" << std::get<2>(*it) << "\"" << std::endl;
-            }
-        } else if (detour == associative_container<tkey, tvalue>::bypass_detour::postfix) {
-
-            for (auto it = postfix_it_begin(); it != postfix_it_end(); it++) {
-
-
-                std::cout << "key: " << std::get<1>(*it) << ", value: \"" << std::get<2>(*it) << "\"" << std::endl;
-            }
-
-        } else {
-            for (auto it = infix_it_begin(); it != infix_it_end(); it++) {
-
-                std::cout << "key: " << std::get<1>(*it) << ", value: \"" << std::get<2>(*it) << "\"" << std::endl;
-            }
-        }
-        debug_print(_root);
+    void bypass_tree(typename associative_container<tkey, tvalue>::bypass_detour detour ) const override {
+//        if (detour == associative_container<tkey, tvalue>::bypass_detour::prefix) {
+//
+//            for (auto it = prefix_it_begin(); it != prefix_it_end(); ++it) {
+//
+//                std::cout << "key: " << std::get<1>(*it) << ", value: \"" << std::get<2>(*it) << "\"" << std::endl;
+//            }
+//        } else if (detour == associative_container<tkey, tvalue>::bypass_detour::postfix) {
+//
+//            for (auto it = postfix_it_begin(); it != postfix_it_end(); it++) {
+//
+//
+//                std::cout << "key: " << std::get<1>(*it) << ", value: \"" << std::get<2>(*it) << "\"" << std::endl;
+//            }
+//
+//        } else {
+//            for (auto it = infix_it_begin(); it != infix_it_end(); it++) {
+//
+//                std::cout << "key: " << std::get<1>(*it) << ", value: \"" << std::get<2>(*it) << "\"" << std::endl;
+//            }
+//        }
+//        debug_print(_root);
     }
 protected:
     void left_mini_rotate(node** current_node) const{
