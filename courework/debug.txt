@@ -1,0 +1,123 @@
+[debug][02.09.2023 08:06:25] ---------The constructor Database has started working--------
+[debug][02.09.2023 08:06:25] ---------The constructor Database has finished working--------
+[warning][02.09.2023 08:06:25] ------------------------------------------------------------------------
+[warning][02.09.2023 08:06:25] -------------------------The dialogue has begun-------------------------
+[warning][02.09.2023 08:06:25] ------------------------------Select action-----------------------------
+1) Enter a command manually 2) Run commands in a file 3) Reset database 4) Exit database
+(You need to write only a number, without brackets and words)
+Input: 
+[warning][02.09.2023 08:06:28] Enter the path to the file
+[warning][02.09.2023 08:06:38] ------------The parsing in file has started working-----------
+[debug][02.09.2023 08:06:38] -----------------Add pool has started working-----------------
+[debug][02.09.2023 08:06:38] 0xd66870
+[debug][02.09.2023 08:06:38] New node 
+[debug][02.09.2023 08:06:38] Balafncing is successful
+[debug][02.09.2023 08:06:38] 0xd668f0
+[debug][02.09.2023 08:06:38] New node 
+[debug][02.09.2023 08:06:38] Balafncing is successful
+[debug][02.09.2023 08:06:38] ----------------Add pool has finished working-----------------
+[warning][02.09.2023 08:06:38] You have successfully added pool: pool name
+[debug][02.09.2023 08:06:38] ------------Add scheme has started working------------
+[debug][02.09.2023 08:06:38] New node 
+[debug][02.09.2023 08:06:38] Balafncing is successful
+[debug][02.09.2023 08:06:38] ------------Add scheme has finished working------------
+[warning][02.09.2023 08:06:38] You have successfully add scheme: scheme with pool: pool name
+[debug][02.09.2023 08:06:38] ------------Add collection has started working------------
+[debug][02.09.2023 08:06:38] New node 
+[debug][02.09.2023 08:06:38] Balafncing is successful
+[debug][02.09.2023 08:06:38] ------------Add collection has finished working------------
+[warning][02.09.2023 08:06:38] You have successfully add collection: coll with scheme: scheme with pool: pool name
+[debug][02.09.2023 08:06:38] ------------Insert has started working------------
+[debug][02.09.2023 08:06:38] New node 
+[debug][02.09.2023 08:06:38] Balafncing is successful
+[debug][02.09.2023 08:06:38] ------------Insert has finished working------------
+[warning][02.09.2023 08:06:38] You have successfully insert: with collection: coll, with scheme: scheme, with pool: pool name
+Key: (13) (2247) (name subject) (exam) 
+Value: (namet) (sstudent) (patrony) (exam_date) (start date) (4) (teacher) (surnher) (patronym) 
+[debug][02.09.2023 08:06:38] ------------Get key information has started working------------
+[debug][02.09.2023 08:06:38] Block to deallocate: [ 112 58 93 116 247 127 0 0 13 0 0 0 199 8 0 0 100 50 231 0 0 0 0 0 12 0 0 0 0 0 0 0 110 97 109 101 32 115 117 98 106 101 99 116 0 0 0 0 2 0 0 0 0 0 0 0 140 50 231 0 0 0 0 0 0 0 0 0 0 0 0 0 0 97 109 101 116 0 0 0 0 0 0 0 0 0 0 0 172 50 231 0 0 0 0 0 0 0 0 0 0 0 0 0 0 115 116 117 100 101 110 116 0 0 0 0 0 0 0 0 204 50 231 0 0 0 0 0 0 0 0 0 0 0 0 0 0 97 116 114 111 110 121 0 0 0 0 0 0 0 0 0 236 50 231 0 0 0 0 0 0 0 0 0 0 0 0 0 0 120 97 109 95 100 97 116 101 0 0 0 0 0 0 0 12 51 231 0 0 0 0 0 0 0 0 0 0 0 0 0 0 116 97 114 116 32 100 97 116 101 0 0 0 0 0 0 4 0 0 0 0 0 0 0 52 51 231 0 0 0 0 0 0 0 0 0 0 0 0 0 0 101 97 99 104 101 114 0 0 0 0 0 0 0 0 0 84 51 231 0 0 0 0 0 0 0 0 0 0 0 0 0 0 117 114 110 104 101 114 0 0 0 0 0 0 0 0 0 116 51 231 0 0 0 0 0 0 0 0 0 0 0 0 0 0 97 116 114 111 110 121 109 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 ]
+[debug][02.09.2023 08:06:38] Node successfully deleted
+[debug][02.09.2023 08:06:38] Balancing is successful
+[debug][02.09.2023 08:06:38] ------------Remove has finished working------------
+[warning][02.09.2023 08:06:38] You have successfully remove: with collection: coll, with scheme: scheme, with pool: pool name
+Key: (13) (2247) (name subject) (exam) 
+[debug][02.09.2023 08:06:38] ------------Insert has started working------------
+[debug][02.09.2023 08:06:38] New node 
+[debug][02.09.2023 08:06:38] Balafncing is successful
+[debug][02.09.2023 08:06:38] ------------Insert has finished working------------
+[warning][02.09.2023 08:06:38] You have successfully insert: with collection: coll, with scheme: scheme, with pool: pool name
+Key: (13) (22) (name subject) (exam) 
+Value: (namet) (sstudent) (patrony) (exam_date) (start date) (4) (teacher) (surnher) (patronym) 
+[debug][02.09.2023 08:06:38] ------------Insert has started working------------
+[debug][02.09.2023 08:06:38] New node 
+[debug][02.09.2023 08:06:38] Balafncing is successful
+[debug][02.09.2023 08:06:38] ------------Insert has finished working------------
+[warning][02.09.2023 08:06:38] You have successfully insert: with collection: coll, with scheme: scheme, with pool: pool name
+Key: (1) (2) (name subject) (exam) 
+Value: (namet) (sstudent) (patrony) (exam_date) (start date) (4) (teacher) (surnher) (patronym) 
+[debug][02.09.2023 08:06:38] ------------Insert has started working------------
+[debug][02.09.2023 08:06:38] New node 
+[debug][02.09.2023 08:06:38] left mini rotate
+[debug][02.09.2023 08:06:38] right mini rotate
+[debug][02.09.2023 08:06:38] Internal balancing
+[debug][02.09.2023 08:06:38] Balafncing is successful
+[debug][02.09.2023 08:06:38] ------------Insert has finished working------------
+[warning][02.09.2023 08:06:38] You have successfully insert: with collection: coll, with scheme: scheme, with pool: pool name
+Key: (1) (25678765) (name subject) (exam) 
+Value: (namet) (sstudent) (patrony) (exam_date) (start date) (4) (teacher) (surnher) (patronym) 
+[debug][02.09.2023 08:06:38] ------------Read range has started working------------
+[warning][02.09.2023 08:06:38] Key: (1) (25678765) (name subject) (exam) Value: (namet) (sstudent) (patrony) (exam_date) (start date) (4) (teacher) (surnher) (patronym) 
+[warning][02.09.2023 08:06:38]  Key: (13) (22) (name subject) (exam) Value: (namet) (sstudent) (patrony) (exam_date) (start date) (4) (teacher) (surnher) (patronym) 
+[debug][02.09.2023 08:06:38] ------------Update key has started working------------
+[debug][02.09.2023 08:06:38] ------------Get key information has started working------------
+[debug][02.09.2023 08:06:38] Block to deallocate: [ 0 62 93 116 247 127 0 0 13 0 0 0 22 0 0 0 100 50 231 0 0 0 0 0 12 0 0 0 0 0 0 0 110 97 109 101 32 115 117 98 106 101 99 116 0 0 0 0 2 0 0 0 0 0 0 0 140 50 231 0 0 0 0 0 5 0 0 0 0 0 0 0 110 97 109 101 116 0 0 0 0 0 0 0 0 0 0 0 172 50 231 0 0 0 0 0 8 0 0 0 0 0 0 0 115 115 116 117 100 101 110 116 0 0 0 0 0 0 0 0 204 50 231 0 0 0 0 0 7 0 0 0 0 0 0 0 112 97 116 114 111 110 121 0 0 0 0 0 0 0 0 0 236 50 231 0 0 0 0 0 9 0 0 0 0 0 0 0 101 120 97 109 95 100 97 116 101 0 0 0 0 0 0 0 12 51 231 0 0 0 0 0 10 0 0 0 0 0 0 0 115 116 97 114 116 32 100 97 116 101 0 0 0 0 0 0 4 0 0 0 0 0 0 0 52 51 231 0 0 0 0 0 7 0 0 0 0 0 0 0 116 101 97 99 104 101 114 0 0 0 0 0 0 0 0 0 84 51 231 0 0 0 0 0 7 0 0 0 0 0 0 0 115 117 114 110 104 101 114 0 0 0 0 0 0 0 0 0 116 51 231 0 0 0 0 0 8 0 0 0 0 0 0 0 112 97 116 114 111 110 121 109 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 ]
+[debug][02.09.2023 08:06:38] Node successfully deleted
+[debug][02.09.2023 08:06:38] Balancing is successful
+[debug][02.09.2023 08:06:38] ------------Remove has finished working------------
+[debug][02.09.2023 08:06:38] ------------Insert has started working------------
+[debug][02.09.2023 08:06:38] New node 
+[debug][02.09.2023 08:06:38] left mini rotate
+[debug][02.09.2023 08:06:38] right mini rotate
+[debug][02.09.2023 08:06:38] Internal balancing
+[debug][02.09.2023 08:06:38] Balafncing is successful
+[debug][02.09.2023 08:06:38] ------------Insert has finished working------------
+[debug][02.09.2023 08:06:38] ------------Update key has finished working------------
+[warning][02.09.2023 08:06:38] You have successfully update key: with collection: coll, with scheme: scheme, with pool: pool name
+Key: (1) (25678765) (name subject) (exam) 
+Value: (vv) (css) (hfjj) (fkkd) (jj) (4) (dce) (ijjj) (jeje) 
+[debug][02.09.2023 08:06:38] ------------Get key information has started working------------
+[debug][02.09.2023 08:06:38] ------------Get key information has finished working------------
+[warning][02.09.2023 08:06:38] You have successfully get key information: with collection: coll, with scheme: scheme, with pool: pool name
+Key: (1) (25678765) (name subject) (exam) 
+Value: (vv) (css) (hfjj) (fkkd) (jj) (4) (dce) (ijjj) (jeje) 
+[debug][02.09.2023 08:06:38] ------------Delete collection has started working------------
+[debug][02.09.2023 08:06:38] Block to deallocate: [ 0 62 93 116 247 127 0 0 1 0 0 0 2 0 0 0 212 51 231 0 0 0 0 0 12 0 0 0 0 0 0 0 110 97 109 101 32 115 117 98 106 101 99 116 0 0 0 0 2 0 0 0 0 0 0 0 252 51 231 0 0 0 0 0 5 0 0 0 0 0 0 0 110 97 109 101 116 0 0 0 0 0 0 0 0 0 0 0 28 52 231 0 0 0 0 0 8 0 0 0 0 0 0 0 115 115 116 117 100 101 110 116 0 0 0 0 0 0 0 0 60 52 231 0 0 0 0 0 7 0 0 0 0 0 0 0 112 97 116 114 111 110 121 0 0 0 0 0 0 0 0 0 92 52 231 0 0 0 0 0 9 0 0 0 0 0 0 0 101 120 97 109 95 100 97 116 101 0 0 0 0 0 0 0 124 52 231 0 0 0 0 0 10 0 0 0 0 0 0 0 115 116 97 114 116 32 100 97 116 101 0 0 0 0 0 0 4 0 0 0 0 0 0 0 164 52 231 0 0 0 0 0 7 0 0 0 0 0 0 0 116 101 97 99 104 101 114 0 0 0 0 0 0 0 0 0 196 52 231 0 0 0 0 0 7 0 0 0 0 0 0 0 115 117 114 110 104 101 114 0 0 0 0 0 0 0 0 0 228 52 231 0 0 0 0 0 8 0 0 0 0 0 0 0 112 97 116 114 111 110 121 109 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 ]
+[debug][02.09.2023 08:06:38] Block to deallocate: [ 112 58 93 116 247 127 0 0 13 0 0 0 22 0 0 0 68 53 231 0 0 0 0 0 12 0 0 0 0 0 0 0 110 97 109 101 32 115 117 98 106 101 99 116 0 0 0 0 2 0 0 0 0 0 0 0 108 53 231 0 0 0 0 0 5 0 0 0 0 0 0 0 110 97 109 101 116 0 0 0 0 0 0 0 0 0 0 0 140 53 231 0 0 0 0 0 8 0 0 0 0 0 0 0 115 115 116 117 100 101 110 116 0 0 0 0 0 0 0 0 172 53 231 0 0 0 0 0 7 0 0 0 0 0 0 0 112 97 116 114 111 110 121 0 0 0 0 0 0 0 0 0 204 53 231 0 0 0 0 0 9 0 0 0 0 0 0 0 101 120 97 109 95 100 97 116 101 0 0 0 0 0 0 0 236 53 231 0 0 0 0 0 10 0 0 0 0 0 0 0 115 116 97 114 116 32 100 97 116 101 0 0 0 0 0 0 4 0 0 0 0 0 0 0 20 54 231 0 0 0 0 0 7 0 0 0 0 0 0 0 116 101 97 99 104 101 114 0 0 0 0 0 0 0 0 0 52 54 231 0 0 0 0 0 7 0 0 0 0 0 0 0 115 117 114 110 104 101 114 0 0 0 0 0 0 0 0 0 84 54 231 0 0 0 0 0 8 0 0 0 0 0 0 0 112 97 116 114 111 110 121 109 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 ]
+[debug][02.09.2023 08:06:38] Block to deallocate: [ 0 62 93 116 247 127 0 0 1 0 0 0 173 211 135 1 100 50 231 0 0 0 0 0 12 0 0 0 0 0 0 0 110 97 109 101 32 115 117 98 106 101 99 116 0 0 0 0 2 0 0 0 0 0 0 0 140 50 231 0 0 0 0 0 2 0 0 0 0 0 0 0 118 118 0 101 116 0 0 0 0 0 0 0 0 0 0 0 172 50 231 0 0 0 0 0 3 0 0 0 0 0 0 0 99 115 115 0 100 101 110 116 0 0 0 0 0 0 0 0 204 50 231 0 0 0 0 0 4 0 0 0 0 0 0 0 104 102 106 106 0 110 121 0 0 0 0 0 0 0 0 0 236 50 231 0 0 0 0 0 4 0 0 0 0 0 0 0 102 107 107 100 0 100 97 116 101 0 0 0 0 0 0 0 12 51 231 0 0 0 0 0 2 0 0 0 0 0 0 0 106 106 0 114 116 32 100 97 116 101 0 0 0 0 0 0 4 0 0 0 0 0 0 0 52 51 231 0 0 0 0 0 3 0 0 0 0 0 0 0 100 99 101 0 104 101 114 0 0 0 0 0 0 0 0 0 84 51 231 0 0 0 0 0 4 0 0 0 0 0 0 0 105 106 106 106 0 101 114 0 0 0 0 0 0 0 0 0 116 51 231 0 0 0 0 0 4 0 0 0 0 0 0 0 106 101 106 101 0 110 121 109 0 0 0 0 0 0 0 0 180 51 231 0 0 0 0 0 36 53 231 0 0 0 0 0 2 0 0 0 0 0 0 0 ]
+[debug][02.09.2023 08:06:38] Block to deallocate: [ 96 53 93 116 247 127 0 0 0 0 0 0 0 0 0 0 68 50 231 0 0 0 0 0 128 60 216 0 0 0 0 0 224 64 214 0 0 0 0 0 64 62 216 0 0 0 0 0 80 102 214 0 0 0 0 0 0 102 214 0 0 0 0 0 ]
+[debug][02.09.2023 08:06:38] Block to deallocate: [ 48 59 93 116 247 127 0 0 252 49 231 0 0 0 0 0 4 0 0 0 0 0 0 0 99 111 108 108 0 0 0 0 0 0 0 0 0 0 0 0 140 49 231 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 ]
+[debug][02.09.2023 08:06:38] Node successfully deleted
+[debug][02.09.2023 08:06:38] Balancing is successful
+[debug][02.09.2023 08:06:38] ------------Delete collection has finished working------------
+[warning][02.09.2023 08:06:38] You have successfully delete collection: coll with scheme: scheme with pool: pool name
+[debug][02.09.2023 08:06:38] ------------Delete scheme has started working------------
+[debug][02.09.2023 08:06:38] Block to deallocate: [ 160 54 93 116 247 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 128 60 216 0 0 0 0 0 224 64 214 0 0 0 0 0 96 61 216 0 0 0 0 0 16 61 216 0 0 0 0 0 192 60 216 0 0 0 0 0 ]
+[debug][02.09.2023 08:06:38] Block to deallocate: [ 176 60 93 116 247 127 0 0 68 49 231 0 0 0 0 0 6 0 0 0 0 0 0 0 115 99 104 101 109 101 0 0 0 0 0 0 0 0 0 0 212 48 231 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 ]
+[debug][02.09.2023 08:06:38] Node successfully deleted
+[debug][02.09.2023 08:06:38] Balancing is successful
+[debug][02.09.2023 08:06:38] ------------Delete scheme has finished working------------
+[warning][02.09.2023 08:06:38] You have successfully delete scheme: scheme with pool: pool name
+[debug][02.09.2023 08:06:38] ------------Delete pool has started working------------
+[debug][02.09.2023 08:06:38] Block to deallocate: [ 80 54 93 116 247 127 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 128 60 216 0 0 0 0 0 224 64 214 0 0 0 0 0 144 63 216 0 0 0 0 0 160 61 216 0 0 0 0 0 64 63 216 0 0 0 0 0 ]
+[debug][02.09.2023 08:06:38] Node successfully deleted
+[debug][02.09.2023 08:06:38] Balancing is successful
+[debug][02.09.2023 08:06:38] Node successfully deleted
+[debug][02.09.2023 08:06:38] Balancing is successful
+[debug][02.09.2023 08:06:38] ------------Delete pool has finished working------------
+[warning][02.09.2023 08:06:38] You have successfully delete pool: pool name
+[warning][02.09.2023 08:06:38] ------------The parsing in file has started working-----------
+[warning][02.09.2023 08:06:38] Parsing file finished successfully!
+Select action
+1) Continue 2)  Exit database
+(You need to write only a number, without brackets and words)
+Input:
